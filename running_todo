@@ -1,0 +1,10 @@
+1) Write python script to download all of the 5 files locally into the cluster
+	a) Connect to S3 final-project bucket
+	b) download 5 files locally, outside of the repo directory (new direcytory on cluster)
+	c) unzip the 4 zipped files
+
+2) Write python script which loops through all CSV files in the newly created "us" directory,
+which is all of the location data for US, and place into hdfs so that we can run a spark
+job against the collective.  Also place the IRS data in hdfs
+
+
