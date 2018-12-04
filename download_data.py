@@ -18,13 +18,13 @@ conn = boto.connect_s3(
 bucket = conn.get_bucket('final-project')
 
 k = Key(bucket)
-k.key = 'addresses_west'
-k.get_contents_to_filename('hello.txt')
 
-#files = ['addresses_midwest', 'addresses_northeast', 'addresses_south', 'addresses_west', 'tax_return_data']
+file_keys = ['addresses_midwest', 'addresses_northeast', 'addresses_south', 'addresses_west', 'tax_return_data']
 
-#for file in files:
-#    k.key = file
-#    pathway = '~/data/'
-#    print(pathway)
-#    k.get_contents_to_filename(file)
+for file in file_keys:
+    k.key = file
+    if 'addresses' in file:
+        pathway = '/home/wce/clsadmin/data/'+ file + '.zip'
+    else:
+        pathway = '/home/wce/clsadmin/data/'+ file + '.csv'
+    k.get_contents_to_filename(pathway)
