@@ -5,8 +5,8 @@ from collections import defaultdict
 
 # define flie locations
 hdfsPath = '/data/'
-localPath = '/root/final_projects/us/'
-irsPath = '/root/final_projects/16zpallagi.csv' # includes file name
+localPath = '/home/wce/clsadmin/data/us/'
+irsPath = '/home/wce/clsadmin/data/tax_return_data.csv' # includes file name
 
 # define state list
 statesCap = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
