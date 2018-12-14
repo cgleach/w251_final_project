@@ -45,7 +45,7 @@ for state in states:
     # define state file path
     os.chdir(localPath + state + '/')
     # get list of county files
-    counties = [doc for doc in os.listdir() if doc.endswith((".csv"))]
+    counties = [doc for doc in os.listdir(".") if doc.endswith((".csv"))]
 
     for file in counties:
         # define file location
