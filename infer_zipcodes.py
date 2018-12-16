@@ -7,6 +7,7 @@ from pyspark.sql.functions import lit
 from functools import reduce  # For Python 3.x
 from pyspark.sql import DataFrame
 from pyspark.sql import SparkSession
+from pyspark.sql.types import *
 
 
 def distance(origin, destination):
@@ -32,11 +33,11 @@ def calc_zip(row, zip_dict):
         x = float(row.LON)
         y = float(row.LAT)
     except:
-        return None
+        return 999999
 
     if row.POSTCODE is None:
         low_dist = 1e5
-        zc = None
+        zc = 999999
         for k,v in zip_dict.items():
             dist = distance(v['coordinates'],(x,y))
             if dist < low_dist:
@@ -45,25 +46,25 @@ def calc_zip(row, zip_dict):
         return zc
             
     else:
-        return row.POSTCODE[:5]
+        return row.POSTCODE
         
 def udf_zip(zip_dict):
     return udf(lambda l: calc_zip(l, zip_dict))
 
 def run():
     # define state list
-    statesCap = ["AL", "AK", "AZ", "AR", "CO", "CT", "DC", "DE", 
+    statesCap = ["AZ", "AR", "CO", "CT", "DC", "DE", 
                  "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", 
                  "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", 
                  "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", 
                  "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", 
-                 "VT", "VA", "WA", "WV", "WI", "WY"] #CA excluded as already ran
+                 "VT", "VA", "WA", "WV", "WI", "WY"] #CA,AL,AK excluded as already ran
     states = [x.lower() for x in statesCap]
     orig_zip_codes = pd.read_csv('/home/wce/clsadmin/data/free-zipcode-database.csv')
     for state in states:
         pathway = '/states_missingness/%s/*' %state
-        df = sc.read.csv(pathway, header=True).persist()
-        df = df.rdd.repartition(256).toDF(sampleRatio=.2)
+        df = sc.read.csv(pathway, header=True, schema = StructType([StructField("LON",DoubleType()),StructField("LAT",DoubleType()),StructField("Number",IntegerType()),StructField("Street",StringType()),StructField("Unit",IntegerType()),StructField("City",StringType()),StructField("District",StringType()),StructField("POSTCODE",StringType()),StructField("ID",IntegerType()),StructField("Hash",StringType()),StructField("State", StringType()),StructField("null_count",IntegerType())])).persist()
+        df = df.rdd.repartition(256).toDF(sampleRatio=1.0)
 
         zip_codes = orig_zip_codes[orig_zip_codes['State']==state.upper()]
         zip_codes = zip_codes[['Zipcode','State','Long','Lat']]
@@ -76,7 +77,18 @@ def run():
         output_path = '/states_with_zip/%s' %state
         print(output_path)
         final_df = df.withColumn("infer_zip", udf_zip(zip_dict)(struct(['LON','LAT','POSTCODE']))).persist()
-        final_df.write.csv(output_path, header=True)
+        final_df = final_df.filter(final_df.LON.isNotNull()).filter(final_df.LAT.isNotNull()).persist()
+        final_df = final_df.fillna('')
+        final_df = final_df.withColumn("District", final_df.District.cast("string"))
+        final_df = final_df.withColumn("ID", final_df.ID.cast("string"))
+        final_df = final_df.withColumn("Number", final_df.Number.cast("int"))
+        final_df = final_df.withColumn("Street", final_df.Street.cast("string"))
+        final_df = final_df.withColumn("Unit", final_df.Unit.cast("int"))
+        final_df = final_df.withColumn("City", final_df.City.cast("string"))
+        final_df = final_df.withColumn("POSTCODE", final_df.POSTCODE.cast("string"))
+        print(df.schema)
+        final_df.show(100)
+        final_df.write.csv(output_path, header=True, nullValue='')
     return
 
 
