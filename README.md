@@ -3,12 +3,12 @@ Repo for final project
 
 Authors: Josh Wilson, Clay Leach, Mark Bennet
 
-## Summary
+## Presentation
 
-## Data
+Our final presentation can be found at:
+  https://docs.google.com/presentation/d/10V_8ZiMfPT-2JtI1oxVgpgrapkH3RisR9oqSMxJ82Zk/edit?usp=sharing
 
-## Tech Stack
+## Write-up
 
-## Key Questions and Findings
-
-## Summary
+Our final write-up can be found at:
+  https://docs.google.com/document/d/1VYCpSK_WIkWeCIwfUHcnhX0TQKTl8EloyCwKnPYZ_S4/edit?usp=sharing
