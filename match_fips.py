@@ -33,12 +33,12 @@ def add_zeroes(value):
 
 def run():
     # define state list
-    statesCap = ["AZ"] #, "AL", "AR", "CA", "CO", "CT", "DC", "DE", 
-                 #"FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", 
-                 #"LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", 
-                 #"NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", 
-                 #"OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", 
-                 #"VT", "VA", "WA", "WV", "WI", "WY"] 
+    statesCap = [ "AL", "AR", "CA", "CO", "CT", "DC", "DE", 
+                 "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", 
+                 "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", 
+                 "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", 
+                 "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", 
+                 "VT", "VA", "WA", "WV", "WI", "WY"] #AK excluded as ran in test 
     states = [x.lower() for x in statesCap]
     fips_map = pd.read_csv('/home/wce/clsadmin/data/ZIP-COUNTY-FIPS_2017-06.csv')
     for state in states:
@@ -61,6 +61,16 @@ def run():
         print(output_path)
         df = df.withColumn('infer_zip',df.infer_zip.cast("string"))
         final_df = df.withColumn("fips", udf_fip(fip_dict)(struct(['infer_zip']))).persist()
+        final_df = final_df.fillna('')
+        final_df = final_df.withColumn("District", final_df.District.cast("string"))
+        final_df = final_df.withColumn("ID", final_df.ID.cast("string"))
+        final_df = final_df.withColumn("Number", final_df.Number.cast("int"))
+        final_df = final_df.withColumn("Street", final_df.Street.cast("string"))
+        final_df = final_df.withColumn("Unit", final_df.Unit.cast("int"))
+        final_df = final_df.withColumn("City", final_df.City.cast("string"))
+        final_df = final_df.withColumn("POSTCODE", final_df.POSTCODE.cast("string"))
+        final_df = final_df.withColumn("infer_zip", final_df.infer_zip.cast("string"))
+        final_df = final_df.withColumn("fips", final_df.fips.cast("string"))
         final_df.show(100)
         final_df.write.csv(output_path, header=True, nullValue='')
     return
