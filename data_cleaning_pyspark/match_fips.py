@@ -33,7 +33,7 @@ def add_zeroes(value):
 
 def run():
     # define state list
-    statesCap = [ "AL", "AR", "CA", "CO", "CT", "DC", "DE", 
+    statesCap = ["AK", "AL", "AR", "CA", "CO", "CT", "DC", "DE", 
                  "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", 
                  "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", 
                  "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", 
@@ -71,7 +71,7 @@ def run():
         final_df = final_df.withColumn("POSTCODE", final_df.POSTCODE.cast("string"))
         final_df = final_df.withColumn("infer_zip", final_df.infer_zip.cast("string"))
         final_df = final_df.withColumn("fips", final_df.fips.cast("string"))
-        final_df.show(100)
+#        final_df.show(100)
         final_df.write.csv(output_path, header=True, nullValue='')
     return
 

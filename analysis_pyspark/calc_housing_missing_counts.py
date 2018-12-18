@@ -18,7 +18,7 @@ def run():
     fips_grouped.write.csv('/final_fips_missing_counts',header=True)    
 
     state_housing_counts = df.groupBy(df.State).agg(func.count('LON').alias("num_addresses"))
-    fips_housing_counts = df.groupBy(df.fips).agg(func.count('LONG').alias("num_addresses"))
+    fips_housing_counts = df.groupBy(df.fips).agg(func.count('LON').alias("num_addresses"))
 
     state_housing_counts.write.csv('/final_state_housing_counts',header=True)
     fips_housing_counts.write.csv('/final_fips_housing_counts',header=True)

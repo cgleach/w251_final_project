@@ -53,12 +53,13 @@ def udf_zip(zip_dict):
 
 def run():
     # define state list
-    statesCap = ["AZ", "AR", "CO", "CT", "DC", "DE", 
-                 "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", 
-                 "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", 
-                 "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", 
-                 "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", 
-                 "VT", "VA", "WA", "WV", "WI", "WY"] #CA,AL,AK excluded as already ran
+    #statesCap = ["LA", "AZ", "AR", "CO", "CT", "DC", "DE", 
+                 #"FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY","LA"   Had to fix ascii encode halfway through 
+#    statesCap = ["CA", "AL", "AK", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", 
+#                 "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", 
+#                 "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", 
+#                 "VT", "VA", "WA", "WV", "WI", "WY"] 
+    statesCap = ["CA"]
     states = [x.lower() for x in statesCap]
     orig_zip_codes = pd.read_csv('/home/wce/clsadmin/data/free-zipcode-database.csv')
     for state in states:
@@ -86,8 +87,8 @@ def run():
         final_df = final_df.withColumn("Unit", final_df.Unit.cast("int"))
         final_df = final_df.withColumn("City", final_df.City.cast("string"))
         final_df = final_df.withColumn("POSTCODE", final_df.POSTCODE.cast("string"))
-        print(df.schema)
-        final_df.show(100)
+#       print(df.schema)
+#        final_df.show(100)
         final_df.write.csv(output_path, header=True, nullValue='')
     return
 

@@ -6,6 +6,7 @@ from pyspark.sql.functions import lit
 from functools import reduce  # For Python 3.x
 from pyspark.sql import DataFrame
 from pyspark.sql.types import IntegerType
+from pyspark.sql import SparkSession
 
 # define state list
 statesCap = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", 
@@ -24,7 +25,7 @@ def add_state_and_dedupe(states):
     for state in states:
         pathway = "/data/%s/*" %state
         print(pathway)
-        df = spark.read.csv(pathway, header=True).persist()
+        df = sc.read.csv(pathway, header=True).persist()
         df = df.withColumn('State',lit(state))
         df = df.drop_duplicates().persist()
         df = df.drop('REGION').persist()
@@ -39,7 +40,7 @@ def count_missing(states):
     for state in states:
         pathway = "/clean_states/%s/*" %state
         print(pathway)
-        df = spark.read.csv(pathway, header=True).persist()
+        df = sc.read.csv(pathway, header=True).persist()
         count_empty_columns = udf(lambda row: len([x for x in row if x == None]), IntegerType())
         new_df = df.withColumn("null_count", count_empty_columns(struct([df[x] for x in df.columns])))
         output_path = '/states_missingness/%s' %state
