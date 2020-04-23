@@ -1,7 +1,5 @@
 import boto
 import boto.s3.connection
-access_key = 'qmU49elkcO5edN2jkmWL'
-secret_key = 'OxbvRTFLJ3HDSbwba9Iwx8vomJpjXXiM6cAQ82Md'
 
 conn = boto.connect_s3(
         aws_access_key_id = access_key,
